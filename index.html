@@ -139,8 +139,15 @@ const fireApp = initializeApp(firebaseConfig);
 const auth = getAuth(fireApp);
 const db = getFirestore(fireApp);
 
-// ── Set your admin UID here after first login (see Profile tab for your UID) ─
-const ADMIN_UID = 'DOUPP6OffPezREAjqIFAQ9yOiRl1';
+// ── Admin check — verified against Firestore /admins collection ──────────
+let _isAdmin = false;
+async function checkAdmin(uid) {
+  try {
+    const snap = await getDoc(doc(db, 'admins', uid));
+    _isAdmin = snap.exists();
+  } catch(e) { _isAdmin = false; }
+  return _isAdmin;
+}
 
 // ── Questions ─────────────────────────────────────────────────────────────
 const QUESTIONS = [
@@ -684,12 +691,11 @@ function renderShell(user,userData){
   topbar.appendChild(av); wrap.appendChild(topbar);
   const page=div('page'); wrap.appendChild(page);
   const nav=div('nav');
-  const isAdmin=user.uid===ADMIN_UID;
   const navItems=[
     {id:'today',icon:'♡',label:'Today'},
     {id:'history',icon:'◷',label:'History'},
     {id:'profile',icon:'◎',label:'Profile'},
-    ...(isAdmin?[{id:'admin',icon:'⚙',label:'Admin'}]:[]),
+    ...(_isAdmin?[{id:'admin',icon:'⚙',label:'Admin'}]:[]),
   ];
   navItems.forEach(n=>{
     const btn=el('button',{class:`nav-item ${currentTab===n.id?'active':''}`});
@@ -702,7 +708,7 @@ function renderShell(user,userData){
   if(currentTab==='today') renderToday(page,user,userData);
   if(currentTab==='history') renderHistory(page,user,userData);
   if(currentTab==='profile') renderProfile(page,user,userData);
-  if(currentTab==='admin'&&isAdmin) renderAdmin(page,user,userData);
+  if(currentTab==='admin'&&_isAdmin) renderAdmin(page,user,userData);
 }
 
 // ── Quote card ────────────────────────────────────────────────────────────
@@ -943,6 +949,7 @@ function renderHistDetail(page,dateStr,entry,q1,q2,q3,user,partnerId,partnerName
   back.onclick=()=>renderHistory(page,user,userData); page.appendChild(back);
   const card=div('card fade-in');
   card.innerHTML=`<div class="date-badge">${formatDate(dateStr)}</div>`;
+
   function showQ(num,q,isBonus){
     const aKey=isBonus?'bonusAnswers':`answers${num}`;
     const myA=entry[aKey]?.[user.uid], pA=partnerId?entry[aKey]?.[partnerId]:null;
@@ -950,17 +957,36 @@ function renderHistDetail(page,dateStr,entry,q1,q2,q3,user,partnerId,partnerName
     const pill=el('span',{class:`pill${isBonus?' pill-gold':''}`},q.cat);
     const qEl=h('div','serif-lg',q.text); qEl.style.marginBottom='14px';
     card.append(numEl,pill,qEl);
-    if(myA&&pA){
+    if(myA||pA){
       const grid=div('ans-grid');
-      grid.append(
-        Object.assign(div('ans-card'),{innerHTML:`<div class="ans-who">You</div><div class="ans-text">${myA}</div>`}),
-        Object.assign(div('ans-card'),{innerHTML:`<div class="ans-who">${partnerName||'Partner'}</div><div class="ans-text">${pA}</div>`})
-      );
+      // My answer card with optional delete
+      const myCard=div('ans-card');
+      myCard.innerHTML=`<div class="ans-who">You</div>`;
+      if(myA){
+        const myText=h('div','ans-text',myA);
+        myCard.appendChild(myText);
+        // Only show delete if both haven't answered yet OR admin
+        const delWrap=div(''); delWrap.style.marginTop='8px';
+        const delBtn=el('button',{class:'btn btn-ghost btn-sm'},'✕ Delete my answer');
+        delBtn.style.cssText='color:var(--rose-dark);border-color:var(--rose-mid);font-size:11px;padding:5px 10px';
+        delBtn.onclick=()=>confirmDeleteAnswer(userData.pairCode,dateStr,aKey,user.uid,()=>renderHistory(page,user,userData));
+        delWrap.appendChild(delBtn); myCard.appendChild(delWrap);
+      } else {
+        myCard.appendChild(h('div','ans-pending','Not answered'));
+      }
+      grid.appendChild(myCard);
+      // Partner answer card
+      const pCard=div('ans-card');
+      pCard.innerHTML=`<div class="ans-who">${partnerName||'Partner'}</div>`;
+      if(pA){ pCard.appendChild(h('div','ans-text',pA)); }
+      else { pCard.appendChild(h('div','ans-pending','Not answered')); }
+      grid.appendChild(pCard);
       card.appendChild(grid);
     } else {
       card.appendChild(Object.assign(el('p',{class:'muted'}),{textContent:"Both answers weren't submitted for this question."}));
     }
   }
+
   showQ(1,q1,false);
   const sep=div('q-divider'); sep.appendChild(el('span',{},'Question 2')); card.appendChild(sep);
   showQ(2,q2,false);
@@ -1107,7 +1133,39 @@ async function renderAdmin(page,user,userData){
   card.appendChild(list); page.appendChild(card);
 }
 
-function confirmReset(pairCode, pairNames, dateStr, onDone){
+function confirmDeleteAnswer(pairCode, dateStr, answersKey, uid, onDone){
+  const overlay=div('modal-bg');
+  const sheet=div('modal-sheet');
+  sheet.innerHTML=`<div class="modal-handle"></div>
+    <div class="serif-md" style="margin-bottom:8px">Delete your answer?</div>
+    <p class="muted" style="margin-bottom:20px">This will remove your answer for this question. You'll be able to answer it again, but your partner's answer will be hidden until you both resubmit.</p>`;
+  const confirmBtn=el('button',{class:'btn btn-danger'},'Yes, delete my answer');
+  const cancelBtn=el('button',{class:'btn btn-ghost mt-3'},'Cancel');
+  cancelBtn.onclick=()=>overlay.remove();
+  confirmBtn.onclick=async()=>{
+    confirmBtn.disabled=true; confirmBtn.textContent='Deleting…';
+    try{
+      const entryRef=doc(db,'pairs',pairCode,'history',dateStr);
+      const snap=await getDoc(entryRef);
+      if(snap.exists()){
+        const data=snap.data();
+        if(data[answersKey]&&data[answersKey][uid]){
+          delete data[answersKey][uid];
+          await setDoc(entryRef,data);
+        }
+      }
+      overlay.remove(); onDone();
+    }catch(e){
+      confirmBtn.disabled=false; confirmBtn.textContent='Yes, delete my answer';
+      alert('Error: '+e.message);
+    }
+  };
+  sheet.append(confirmBtn,cancelBtn); overlay.appendChild(sheet);
+  overlay.onclick=e=>{if(e.target===overlay)overlay.remove();};
+  document.body.appendChild(overlay);
+}
+
+
   const overlay=div('modal-bg');
   const sheet=div('modal-sheet');
   sheet.innerHTML=`<div class="modal-handle"></div>
@@ -1172,7 +1230,10 @@ onAuthStateChanged(auth,async(user)=>{
   if(unsubPair){unsubPair();unsubPair=null;}
   if(!user){renderAuth('login');return;}
   renderLoading();
-  const snap=await getDoc(doc(db,'users',user.uid));
+  const [snap] = await Promise.all([
+    getDoc(doc(db,'users',user.uid)),
+    checkAdmin(user.uid),
+  ]);
   const userData=snap.exists()?snap.data():{name:user.displayName||'',email:user.email,pairCode:null};
   currentTab='today';
   renderShell(user,userData);
