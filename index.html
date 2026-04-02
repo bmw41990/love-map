@@ -484,7 +484,7 @@ const QUESTIONS = [
   {id:317,text:"What does your relationship with your body look like right now?",cat:"Mind & Body"},
   {id:318,text:"What's something that reliably restores your energy?",cat:"Mind & Body"},
   {id:319,text:"How do you know when you're burned out, and what do you do?",cat:"Mind & Body"},
-  {id:320,text:"What does mental health look like in your daily life?",cat:"Mental & Body"},
+  {id:320,text:"What does mental health look like in your daily life?",cat:"Mind & Body"},
   {id:321,text:"What's something physical you do that makes you feel most like yourself?",cat:"Mind & Body"},
   {id:322,text:"What's your relationship with sleep — do you protect it?",cat:"Mind & Body"},
   {id:323,text:"What's something you do for yourself that you wish you did more?",cat:"Mind & Body"},
@@ -754,20 +754,18 @@ function buildQuestionBlock(container, {qNum,q,myAnswer,partnerAnswer,partnerNam
   } else if(!partnerAnswer){
     const waiting=div('banner-rose');
     waiting.append(div('dots',el('span'),el('span'),el('span')),el('span',{},'Waiting for ',el('strong',{},partnerName||'your partner'),' to answer…'));
-    const grid=div('ans-grid');
-    grid.append(
-      Object.assign(div('ans-card'),{innerHTML:`<div class="ans-who">You</div><div class="ans-text">${myAnswer}</div>`}),
-      Object.assign(div('ans-card'),{innerHTML:`<div class="ans-who">${partnerName||'Partner'}</div><div class="ans-pending">Not yet answered</div>`})
-    );
+      const grid=div('ans-grid');
+    const myCard=div('ans-card'); myCard.appendChild(h('div','ans-who','You')); const myTxt=h('div','ans-text',''); myTxt.textContent=myAnswer; myCard.appendChild(myTxt);
+    const pCard=div('ans-card'); pCard.appendChild(h('div','ans-who',partnerName||'Partner')); pCard.appendChild(h('div','ans-pending','Not yet answered'));
+    grid.append(myCard,pCard);
     container.append(waiting,grid);
   } else {
     const revealed=div('banner-green');
     revealed.innerHTML='<span>✦</span><span><strong>Both answers revealed!</strong></span>';
     const grid=div('ans-grid');
-    grid.append(
-      Object.assign(div('ans-card'),{innerHTML:`<div class="ans-who">You</div><div class="ans-text">${myAnswer}</div>`}),
-      Object.assign(div('ans-card'),{innerHTML:`<div class="ans-who">${partnerName||'Partner'}</div><div class="ans-text">${partnerAnswer}</div>`})
-    );
+    const myCard2=div('ans-card'); myCard2.appendChild(h('div','ans-who','You')); const myTxt2=h('div','ans-text',''); myTxt2.textContent=myAnswer; myCard2.appendChild(myTxt2);
+    const pCard2=div('ans-card'); pCard2.appendChild(h('div','ans-who',partnerName||'Partner')); const pTxt=h('div','ans-text',''); pTxt.textContent=partnerAnswer; pCard2.appendChild(pTxt);
+    grid.append(myCard2,pCard2);
     container.append(revealed,grid);
   }
 }
