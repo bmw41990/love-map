@@ -140,7 +140,7 @@ const auth = getAuth(fireApp);
 const db = getFirestore(fireApp);
 
 // ── Set your admin UID here after first login (see Profile tab for your UID) ─
-const ADMIN_UID = 'DOUPP6OffPezREAjqIFAQ9yOiRl1';
+const ADMIN_UID = 'REPLACE_WITH_YOUR_UID';
 
 // ── Questions ─────────────────────────────────────────────────────────────
 const QUESTIONS = [
@@ -1035,11 +1035,58 @@ async function renderAdmin(page,user,userData){
   page.innerHTML=''; page.appendChild(div('loading',div('spinner')));
   const usersSnap=await getDocs(collection(db,'users'));
   page.innerHTML='';
-  const card=div('card fade-in');
-  const badge=div('admin-badge'); badge.textContent='⚙ Admin';
+
+  // ── Reset today's questions card ──
+  const resetCard=div('card fade-in');
+  const resetBadge=div('admin-badge'); resetBadge.textContent='⚙ Admin';
+  const resetTitle=h('div','serif-md',"Today's Questions"); resetTitle.style.marginBottom='4px';
+  const today=todayStr();
+  const resetSub=h('p','muted',`Reset all answers for ${formatDate(today)}. Both users will be able to answer again from scratch.`);
+  resetSub.style.marginBottom='18px';
+
+  // Show all pairs and their today status
+  const pairsSnap=await getDocs(collection(db,'pairs'));
+  const pairList=div('');
+  let hasPairs=false;
+
+  for(const pSnap of pairsSnap.docs){
+    const pd=pSnap.data();
+    if(!pd.user1Name&&!pd.user2Name) continue;
+    hasPairs=true;
+    const entrySnap=await getDoc(doc(db,'pairs',pSnap.id,'history',today));
+    const entry=entrySnap.exists()?entrySnap.data():null;
+    const u1answered=!!(entry?.answers1?.[pd.user1Id]);
+    const u2answered=!!(entry?.answers2?.[pd.user2Id]||entry?.answers1?.[pd.user2Id]);
+    const hasAny=!!(entry&&Object.keys(entry).length);
+
+    const row=div('user-row');
+    const info=div('');
+    const names=`${pd.user1Name||'?'}${pd.user2Name?' & '+pd.user2Name:''}`;
+    const status=!hasAny?'No answers yet':(!u1answered||!u2answered)?'In progress':'Both answered';
+    const statusColor=!hasAny?'var(--ink-faint)':(!u1answered||!u2answered)?'var(--gold)':'var(--green)';
+    info.innerHTML=`<div class="user-name">${names}</div><div style="font-size:12px;color:${statusColor};margin-top:1px">${status}</div>`;
+
+    const resetBtn=el('button',{class:'btn btn-ghost btn-sm'},'Reset');
+    resetBtn.style.cssText='color:var(--rose-dark);border-color:var(--rose-mid)';
+    if(!hasAny){ resetBtn.disabled=true; resetBtn.style.opacity='0.4'; }
+    resetBtn.onclick=()=>confirmReset(pSnap.id, names, today, ()=>renderAdmin(page,user,userData));
+    row.append(info,resetBtn);
+    pairList.appendChild(row);
+  }
+
+  if(!hasPairs){
+    const empty=h('p','muted','No pairs found.'); empty.style.textAlign='center';
+    pairList.appendChild(empty);
+  }
+
+  resetCard.append(resetBadge,resetTitle,resetSub,pairList);
+  page.appendChild(resetCard);
+
+  // ── User management card ──
+  const card=div('card');
   const title=h('div','serif-md','User management'); title.style.marginBottom='4px';
   const count=h('p','muted',`${usersSnap.size} account${usersSnap.size===1?'':'s'} registered`); count.style.marginBottom='18px';
-  card.append(badge,title,count);
+  card.append(title,count);
   const list=div('');
   let hasOthers=false;
   usersSnap.forEach(snap=>{
@@ -1058,6 +1105,32 @@ async function renderAdmin(page,user,userData){
     list.appendChild(empty);
   }
   card.appendChild(list); page.appendChild(card);
+}
+
+function confirmReset(pairCode, pairNames, dateStr, onDone){
+  const overlay=div('modal-bg');
+  const sheet=div('modal-sheet');
+  sheet.innerHTML=`<div class="modal-handle"></div>
+    <div class="serif-md" style="margin-bottom:8px">Reset today's questions?</div>
+    <p class="muted" style="margin-bottom:6px">This will erase all of <strong>${pairNames}</strong>'s answers for <strong>${formatDate(dateStr)}</strong>.</p>
+    <p class="muted" style="margin-bottom:20px">Both users will be able to answer today's questions again from scratch.</p>`;
+  const confirmBtn=el('button',{class:'btn btn-primary'},'Yes, reset today');
+  confirmBtn.style.background='var(--rose-dark)';
+  const cancelBtn=el('button',{class:'btn btn-ghost mt-3'},'Cancel');
+  cancelBtn.onclick=()=>overlay.remove();
+  confirmBtn.onclick=async()=>{
+    confirmBtn.disabled=true; confirmBtn.textContent='Resetting…';
+    try{
+      await deleteDoc(doc(db,'pairs',pairCode,'history',dateStr));
+      overlay.remove(); onDone();
+    }catch(e){
+      confirmBtn.disabled=false; confirmBtn.textContent='Yes, reset today';
+      alert('Error: '+e.message);
+    }
+  };
+  sheet.append(confirmBtn,cancelBtn); overlay.appendChild(sheet);
+  overlay.onclick=e=>{if(e.target===overlay)overlay.remove();};
+  document.body.appendChild(overlay);
 }
 
 function confirmDelete(targetUser,onDone){
