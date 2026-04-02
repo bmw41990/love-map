@@ -119,7 +119,7 @@
   </style>
 </head>
 <body>
-<div id="app"><div class="loading"><div class="spinner"></div><span>Loading…</span></div></div>
+<div id="app"><div class="loading"><div class="spinner"></div><span>Loading...</span></div></div>
 
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
@@ -139,7 +139,7 @@ const fireApp = initializeApp(firebaseConfig);
 const auth = getAuth(fireApp);
 const db = getFirestore(fireApp);
 
-// ── Admin check — verified against Firestore /admins collection ──────────
+// -- Admin check - verified against Firestore /admins collection ----------
 let _isAdmin = false;
 async function checkAdmin(uid) {
   try {
@@ -149,9 +149,9 @@ async function checkAdmin(uid) {
   return _isAdmin;
 }
 
-// ── Questions ─────────────────────────────────────────────────────────────
+// -- Questions -------------------------------------------------------------
 const QUESTIONS = [
-  // ── Daily Love ──
+  // -- Daily Love --
   {id:1,text:"What's one small thing I do that makes your day a little better?",cat:"Daily Love"},
   {id:5,text:"Describe our perfect lazy Sunday in detail.",cat:"Daily Love"},
   {id:17,text:"How do you most like to be comforted when you're having a hard day?",cat:"Daily Love"},
@@ -177,7 +177,7 @@ const QUESTIONS = [
   {id:62,text:"What's something about our daily routine that you secretly love?",cat:"Daily Love"},
   {id:63,text:"What's the most underrated thing about living together?",cat:"Daily Love"},
   {id:64,text:"What's something you noticed about me recently that made you smile?",cat:"Daily Love"},
-  // ── Origins ──
+  // -- Origins --
   {id:2,text:"What's a childhood memory that still makes you smile?",cat:"Origins"},
   {id:8,text:"What's one thing you wish you could go back and tell your teenage self?",cat:"Origins"},
   {id:13,text:"What song instantly transports you back to a specific moment in your life?",cat:"Origins"},
@@ -198,7 +198,7 @@ const QUESTIONS = [
   {id:77,text:"What's a film, show, or book that defined your childhood?",cat:"Origins"},
   {id:78,text:"What's something you were convinced of as a child that turned out to be completely wrong?",cat:"Origins"},
   {id:79,text:"What's your happiest holiday memory growing up?",cat:"Origins"},
-  {id:80,text:"What was your first experience of heartbreak — romantic or otherwise?",cat:"Origins"},
+  {id:80,text:"What was your first experience of heartbreak - romantic or otherwise?",cat:"Origins"},
   {id:81,text:"What's the most rebellious thing you did as a teenager?",cat:"Origins"},
   {id:82,text:"What teacher had the biggest impact on your life?",cat:"Origins"},
   {id:83,text:"What did your family do on Sunday mornings when you were young?",cat:"Origins"},
@@ -207,7 +207,7 @@ const QUESTIONS = [
   {id:86,text:"What was the neighborhood or home you grew up in like?",cat:"Origins"},
   {id:87,text:"What's a game or sport you played as a kid that you loved?",cat:"Origins"},
   {id:88,text:"What's the best gift you ever received as a child?",cat:"Origins"},
-  // ── Dreams ──
+  // -- Dreams --
   {id:3,text:"If we could live anywhere in the world for a year, where would you choose?",cat:"Dreams"},
   {id:10,text:"If you could have dinner with any three people, living or dead, who would you pick?",cat:"Dreams"},
   {id:16,text:"What's a place you've visited that left a mark on you?",cat:"Dreams"},
@@ -235,7 +235,7 @@ const QUESTIONS = [
   {id:106,text:"If you wrote a book, what would it be about?",cat:"Dreams"},
   {id:107,text:"What's something on your bucket list you haven't told many people about?",cat:"Dreams"},
   {id:108,text:"What would a perfect day ten years from now look like for you?",cat:"Dreams"},
-  // ── Growth ──
+  // -- Growth --
   {id:4,text:"What's something you've always wanted to learn but haven't yet?",cat:"Growth"},
   {id:15,text:"What does a truly fulfilling career look like to you?",cat:"Growth"},
   {id:19,text:"What quality in yourself are you still working on?",cat:"Growth"},
@@ -257,14 +257,14 @@ const QUESTIONS = [
   {id:119,text:"How do you handle stress, and has that changed over time?",cat:"Growth"},
   {id:120,text:"What's something you've recently started to appreciate that you used to dismiss?",cat:"Growth"},
   {id:121,text:"What does discipline mean to you, and where does it show up in your life?",cat:"Growth"},
-  {id:122,text:"What's a relationship — platonic or otherwise — that made you a better person?",cat:"Growth"},
+  {id:122,text:"What's a relationship - platonic or otherwise - that made you a better person?",cat:"Growth"},
   {id:123,text:"What's one thing you wish you could teach your younger self?",cat:"Growth"},
   {id:124,text:"What's something you're more patient about now than you used to be?",cat:"Growth"},
   {id:125,text:"What's a goal you've set and abandoned, and do you regret it?",cat:"Growth"},
   {id:126,text:"What does emotional intelligence mean to you?",cat:"Growth"},
   {id:127,text:"What's something that once scared you that no longer does?",cat:"Growth"},
   {id:128,text:"How has your definition of happiness changed over time?",cat:"Growth"},
-  // ── Depth ──
+  // -- Depth --
   {id:6,text:"What's a fear you've never fully told me about?",cat:"Depth"},
   {id:9,text:"What's something you're most proud of that you rarely talk about?",cat:"Depth"},
   {id:12,text:"What's the bravest thing you've ever done?",cat:"Depth"},
@@ -293,7 +293,7 @@ const QUESTIONS = [
   {id:148,text:"What makes you feel truly seen?",cat:"Depth"},
   {id:149,text:"What's something you wish people understood about you without you having to explain it?",cat:"Depth"},
   {id:150,text:"What do you believe about the afterlife, if anything?",cat:"Depth"},
-  // ── Values ──
+  // -- Values --
   {id:7,text:"What does home mean to you?",cat:"Values"},
   {id:11,text:"What's a tradition from your family you'd love to carry forward?",cat:"Values"},
   {id:24,text:"What's the kindest thing a stranger has ever done for you?",cat:"Values"},
@@ -313,14 +313,14 @@ const QUESTIONS = [
   {id:161,text:"What does a life well-lived look like to you?",cat:"Values"},
   {id:162,text:"What's something you value now that you didn't prioritize when you were younger?",cat:"Values"},
   {id:163,text:"What's your relationship with money and where did that come from?",cat:"Values"},
-  {id:164,text:"What does rest mean to you — is it something you allow yourself?",cat:"Values"},
+  {id:164,text:"What does rest mean to you - is it something you allow yourself?",cat:"Values"},
   {id:165,text:"What's something the world needs more of right now?",cat:"Values"},
   {id:166,text:"What does community mean to you?",cat:"Values"},
   {id:167,text:"What's a boundary you've set that you're proud of?",cat:"Values"},
   {id:168,text:"What does honesty in a relationship look like to you?",cat:"Values"},
-  {id:169,text:"What role does humor play in your life — is it important to you?",cat:"Values"},
+  {id:169,text:"What role does humor play in your life - is it important to you?",cat:"Values"},
   {id:170,text:"What's something you believe about kindness?",cat:"Values"},
-  // ── Us ──
+  // -- Us --
   {id:14,text:"What's something I do that surprises you, even after all this time?",cat:"Us"},
   {id:20,text:"When did you first realize you were in love with me?",cat:"Us"},
   {id:25,text:"What's something you secretly find hilarious about me?",cat:"Us"},
@@ -350,7 +350,7 @@ const QUESTIONS = [
   {id:190,text:"What's one thing you want me to know about how I make you feel?",cat:"Us"},
   {id:191,text:"What's something you'd love to create or build together?",cat:"Us"},
   {id:192,text:"What's a word or phrase that, to you, perfectly describes us?",cat:"Us"},
-  // ── Imagination ──
+  // -- Imagination --
   {id:193,text:"If you could swap lives with anyone for a week, who would it be?",cat:"Imagination"},
   {id:194,text:"If our relationship were a film, what genre would it be?",cat:"Imagination"},
   {id:195,text:"If you could only eat one cuisine for the rest of your life, what would you choose?",cat:"Imagination"},
@@ -375,30 +375,30 @@ const QUESTIONS = [
   {id:214,text:"If your home could only have one room, what would it look like?",cat:"Imagination"},
   {id:215,text:"If you could add one holiday to the calendar, what would it celebrate?",cat:"Imagination"},
   {id:216,text:"If you could wake up tomorrow fluent in one language, which would you pick?",cat:"Imagination"},
-  // ── Gratitude ──
+  // -- Gratitude --
   {id:217,text:"What's something you're deeply grateful for that you don't say often enough?",cat:"Gratitude"},
   {id:218,text:"What's something about your body or health you're grateful for?",cat:"Gratitude"},
   {id:219,text:"Who is someone in your life you should thank more?",cat:"Gratitude"},
   {id:220,text:"What's a hardship that, in hindsight, you're grateful for?",cat:"Gratitude"},
   {id:221,text:"What's something about your upbringing that you now appreciate?",cat:"Gratitude"},
   {id:222,text:"What's a piece of technology you're genuinely grateful for?",cat:"Gratitude"},
-  {id:223,text:"What's something about today — specifically — that you're thankful for?",cat:"Gratitude"},
+  {id:223,text:"What's something about today - specifically - that you're thankful for?",cat:"Gratitude"},
   {id:224,text:"What's a friendship you're grateful has lasted?",cat:"Gratitude"},
   {id:225,text:"What's something about our relationship you're most grateful for right now?",cat:"Gratitude"},
   {id:226,text:"What's a place in the world you feel grateful to have seen?",cat:"Gratitude"},
   {id:227,text:"What's an opportunity you were given that changed your life?",cat:"Gratitude"},
   {id:228,text:"What's something you take for granted that you want to appreciate more?",cat:"Gratitude"},
   {id:229,text:"What's a small comfort in your daily life that brings you real joy?",cat:"Gratitude"},
-  {id:230,text:"What's something you've been given — not earned — that you're grateful for?",cat:"Gratitude"},
+  {id:230,text:"What's something you've been given - not earned - that you're grateful for?",cat:"Gratitude"},
   {id:231,text:"What's a difficult conversation you're glad you had?",cat:"Gratitude"},
   {id:232,text:"What's something in nature that fills you with awe?",cat:"Gratitude"},
   {id:233,text:"Who shaped who you are in a way you haven't fully acknowledged?",cat:"Gratitude"},
   {id:234,text:"What's something that felt like bad luck at the time but turned out to be a gift?",cat:"Gratitude"},
   {id:235,text:"What's a skill or talent you have that you're grateful for?",cat:"Gratitude"},
   {id:236,text:"What's something about the time in history we live in that you're grateful for?",cat:"Gratitude"},
-  // ── Big Picture ──
-  {id:237,text:"What do you think is the meaning of life — your personal answer?",cat:"Big Picture"},
-  {id:238,text:"What's your relationship with death — does it scare you or motivate you?",cat:"Big Picture"},
+  // -- Big Picture --
+  {id:237,text:"What do you think is the meaning of life - your personal answer?",cat:"Big Picture"},
+  {id:238,text:"What's your relationship with death - does it scare you or motivate you?",cat:"Big Picture"},
   {id:239,text:"Do you think people fundamentally change, or do they reveal who they already are?",cat:"Big Picture"},
   {id:240,text:"What role does luck play in a life well-lived?",cat:"Big Picture"},
   {id:241,text:"Do you believe in fate, free will, or something in between?",cat:"Big Picture"},
@@ -408,16 +408,16 @@ const QUESTIONS = [
   {id:245,text:"What's a question you keep coming back to that you haven't answered?",cat:"Big Picture"},
   {id:246,text:"Do you think happiness is something you find or something you build?",cat:"Big Picture"},
   {id:247,text:"What do you think the world needs more of right now?",cat:"Big Picture"},
-  {id:248,text:"What's your relationship with ambition — is it a friend or a tyrant?",cat:"Big Picture"},
+  {id:248,text:"What's your relationship with ambition - is it a friend or a tyrant?",cat:"Big Picture"},
   {id:249,text:"What's something you believe about human connection?",cat:"Big Picture"},
   {id:250,text:"What makes a community thrive, in your view?",cat:"Big Picture"},
   {id:251,text:"If you could change one thing about how society raises children, what would it be?",cat:"Big Picture"},
   {id:252,text:"What does courage mean to you?",cat:"Big Picture"},
   {id:253,text:"What's something about growing older that you're at peace with?",cat:"Big Picture"},
   {id:254,text:"What's something you think most people misunderstand about happiness?",cat:"Big Picture"},
-  {id:255,text:"What's your relationship with uncertainty — can you make peace with not knowing?",cat:"Big Picture"},
+  {id:255,text:"What's your relationship with uncertainty - can you make peace with not knowing?",cat:"Big Picture"},
   {id:256,text:"What does it mean to live with integrity, in your own words?",cat:"Big Picture"},
-  // ── Just for Fun ──
+  // -- Just for Fun --
   {id:257,text:"What's a guilty pleasure you've fully stopped feeling guilty about?",cat:"Just for Fun"},
   {id:258,text:"What's the most useless talent you have?",cat:"Just for Fun"},
   {id:259,text:"What's a movie or show you've rewatched more times than you'd admit?",cat:"Just for Fun"},
@@ -438,12 +438,12 @@ const QUESTIONS = [
   {id:274,text:"If you had to eat only one fast food meal for a month, what would you choose?",cat:"Just for Fun"},
   {id:275,text:"What's a trend you secretly liked even though you pretended not to?",cat:"Just for Fun"},
   {id:276,text:"What's the funniest misunderstanding you've ever been part of?",cat:"Just for Fun"},
-  // ── Future Together ──
+  // -- Future Together --
   {id:277,text:"Where do you picture us living ten years from now?",cat:"Future Together"},
   {id:278,text:"What's a tradition you want us to start this year?",cat:"Future Together"},
   {id:279,text:"What's something you want us to experience together before we're 70?",cat:"Future Together"},
   {id:280,text:"What kind of old couple do you want us to be?",cat:"Future Together"},
-  {id:281,text:"What does our ideal home feel like — not look like, but feel like?",cat:"Future Together"},
+  {id:281,text:"What does our ideal home feel like - not look like, but feel like?",cat:"Future Together"},
   {id:282,text:"What's one adventure you want us to go on in the next two years?",cat:"Future Together"},
   {id:283,text:"What's a shared goal you want us to set for this year?",cat:"Future Together"},
   {id:284,text:"How do you want us to handle hard times differently in the future?",cat:"Future Together"},
@@ -457,9 +457,9 @@ const QUESTIONS = [
   {id:292,text:"What's something small we could do every week to stay connected?",cat:"Future Together"},
   {id:293,text:"What role do you want community and friendship to play in our future?",cat:"Future Together"},
   {id:294,text:"What does your ideal version of us look like on an ordinary Tuesday in five years?",cat:"Future Together"},
-  {id:295,text:"What's something you'd love for us to build — physically, professionally, or creatively?",cat:"Future Together"},
+  {id:295,text:"What's something you'd love for us to build - physically, professionally, or creatively?",cat:"Future Together"},
   {id:296,text:"What's one way you want to show up differently for each other next year?",cat:"Future Together"},
-  // ── Seasons & Moments ──
+  // -- Seasons & Moments --
   {id:297,text:"What's your favorite memory from this past month?",cat:"Seasons & Moments"},
   {id:298,text:"What's something happening in the world right now that moves you?",cat:"Seasons & Moments"},
   {id:299,text:"What season of life do you feel like you're in right now?",cat:"Seasons & Moments"},
@@ -469,35 +469,35 @@ const QUESTIONS = [
   {id:303,text:"What's something you're carrying this week that you haven't said out loud?",cat:"Seasons & Moments"},
   {id:304,text:"What's something in your life right now that feels like it's in bloom?",cat:"Seasons & Moments"},
   {id:305,text:"What's a transition you're in the middle of right now?",cat:"Seasons & Moments"},
-  {id:306,text:"What's something about right now — this exact chapter — you want to remember?",cat:"Seasons & Moments"},
+  {id:306,text:"What's something about right now - this exact chapter - you want to remember?",cat:"Seasons & Moments"},
   {id:307,text:"What's something that felt heavy this week but lighter now?",cat:"Seasons & Moments"},
   {id:308,text:"What's a small moment from recently that you're glad you noticed?",cat:"Seasons & Moments"},
   {id:309,text:"What's something you're hoping for in the next few months?",cat:"Seasons & Moments"},
   {id:310,text:"What's something you've been putting off that you know you need to face?",cat:"Seasons & Moments"},
   {id:311,text:"What emotion has been visiting you most often lately?",cat:"Seasons & Moments"},
   {id:312,text:"What's something about this season of your life that's harder than people know?",cat:"Seasons & Moments"},
-  {id:313,text:"What's a recent win — however small — that deserves to be celebrated?",cat:"Seasons & Moments"},
+  {id:313,text:"What's a recent win - however small - that deserves to be celebrated?",cat:"Seasons & Moments"},
   {id:314,text:"What are you most curious about right now?",cat:"Seasons & Moments"},
   {id:315,text:"What's something you want to let go of before the year is out?",cat:"Seasons & Moments"},
   {id:316,text:"What does this chapter of your life need more of?",cat:"Seasons & Moments"},
-  // ── Mind & Body ──
+  // -- Mind & Body --
   {id:317,text:"What does your relationship with your body look like right now?",cat:"Mind & Body"},
   {id:318,text:"What's something that reliably restores your energy?",cat:"Mind & Body"},
   {id:319,text:"How do you know when you're burned out, and what do you do?",cat:"Mind & Body"},
   {id:320,text:"What does mental health look like in your daily life?",cat:"Mind & Body"},
   {id:321,text:"What's something physical you do that makes you feel most like yourself?",cat:"Mind & Body"},
-  {id:322,text:"What's your relationship with sleep — do you protect it?",cat:"Mind & Body"},
+  {id:322,text:"What's your relationship with sleep - do you protect it?",cat:"Mind & Body"},
   {id:323,text:"What's something you do for yourself that you wish you did more?",cat:"Mind & Body"},
   {id:324,text:"How do you feel about your body right now, honestly?",cat:"Mind & Body"},
   {id:325,text:"What does a really good mental health day look like for you?",cat:"Mind & Body"},
   {id:326,text:"What's something your body does that you're grateful for?",cat:"Mind & Body"},
   {id:327,text:"What's an activity that gets you completely out of your head?",cat:"Mind & Body"},
-  {id:328,text:"What's your relationship with food — is it complicated or simple?",cat:"Mind & Body"},
+  {id:328,text:"What's your relationship with food - is it complicated or simple?",cat:"Mind & Body"},
   {id:329,text:"What's something about your health you want to take better care of?",cat:"Mind & Body"},
-  {id:330,text:"What does solitude do for you — refuel you or drain you?",cat:"Mind & Body"},
+  {id:330,text:"What does solitude do for you - refuel you or drain you?",cat:"Mind & Body"},
   {id:331,text:"What's a physical sensation you find deeply comforting?",cat:"Mind & Body"},
   {id:332,text:"What's the most at home you've ever felt in your own body?",cat:"Mind & Body"},
-  // ── Curious About You ──
+  // -- Curious About You --
   {id:333,text:"What's something about me you've been curious about but never asked?",cat:"Curious About You"},
   {id:334,text:"What's something you assumed about me early on that turned out to be wrong?",cat:"Curious About You"},
   {id:335,text:"What's something you wish you understood better about how I think?",cat:"Curious About You"},
@@ -518,7 +518,7 @@ const QUESTIONS = [
   {id:350,text:"What's something you want me to know about how you experience being loved by me?",cat:"Curious About You"},
   {id:351,text:"What do you think is the truest thing about me?",cat:"Curious About You"},
   {id:352,text:"What's a version of me you've seen that you'd love to see more of?",cat:"Curious About You"},
-  // ── Reflections ──
+  // -- Reflections --
   {id:353,text:"What's the most important decision you've ever made?",cat:"Reflections"},
   {id:354,text:"What's something you did that you weren't sure you could do?",cat:"Reflections"},
   {id:355,text:"What's a relationship from your past that shaped your idea of love?",cat:"Reflections"},
@@ -543,12 +543,12 @@ const QUOTES = [
   {text:"The best thing to hold onto in life is each other.",author:"Audrey Hepburn"},
   {text:"A great relationship is about two things: appreciating the similarities, and respecting the differences.",author:"Unknown"},
   {text:"Being deeply loved by someone gives you strength, while loving someone deeply gives you courage.",author:"Lao Tzu"},
-  {text:"A happy marriage is a long conversation which always seems too short.",author:"André Maurois"},
+  {text:"A happy marriage is a long conversation which always seems too short.",author:"Andre Maurois"},
   {text:"The real act of marriage takes place in the heart, not in the ballroom or church.",author:"Barbara De Angelis"},
   {text:"In all the world, there is no heart for me like yours.",author:"Maya Angelou"},
   {text:"Love is an act of endless forgiveness, a tender look which becomes a habit.",author:"Peter Ustinov"},
   {text:"A successful marriage requires falling in love many times, always with the same person.",author:"Mignon McLaughlin"},
-  {text:"To be fully seen by somebody, and be loved anyhow — this is a human offering that can border on miraculous.",author:"Elizabeth Gilbert"},
+  {text:"To be fully seen by somebody, and be loved anyhow - this is a human offering that can border on miraculous.",author:"Elizabeth Gilbert"},
   {text:"Love doesn't make the world go 'round. Love is what makes the ride worthwhile.",author:"Franklin P. Jones"},
   {text:"Whatever our souls are made of, his and mine are the same.",author:"Emily Brontë"},
   {text:"The most important thing in the world is family and love.",author:"John Wooden"},
@@ -557,7 +557,7 @@ const QUOTES = [
   {text:"Love is not about how many days, months, or years you have been together. It's how much you love each other every single day.",author:"Unknown"},
 ];
 
-// ── Helpers ───────────────────────────────────────────────────────────────
+// -- Helpers ---------------------------------------------------------------
 function todayStr() {
   const d=new Date();
   return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
@@ -600,13 +600,13 @@ function el(tag,props={},...children) {
 function div(cls,...children){return el('div',{class:cls},...children);}
 function h(tag,cls,text){const e=document.createElement(tag);e.className=cls;e.textContent=text;return e;}
 
-// ── State ─────────────────────────────────────────────────────────────────
+// -- State -----------------------------------------------------------------
 let currentUser=null, currentTab='today', unsubPair=null;
 
 function render(content){const root=document.getElementById('app');root.innerHTML='';root.appendChild(content);}
-function renderLoading(){render(div('loading',div('spinner'),el('span',{},'Loading…')));}
+function renderLoading(){render(div('loading',div('spinner'),el('span',{},'Loading...')));}
 
-// ── Auth ──────────────────────────────────────────────────────────────────
+// -- Auth ------------------------------------------------------------------
 function renderAuth(mode='login'){
   const wrap=div('shell'); wrap.style.paddingBottom='40px';
   wrap.appendChild(div('topbar',el('span',{class:'wordmark'},'love ',el('em',{},'map'),el('span',{},'Trivia'))));
@@ -641,7 +641,7 @@ function renderAuth(mode='login'){
   const btn=el('button',{class:'btn btn-primary',style:{marginTop:'14px'}},mode==='login'?'Sign in':'Create account');
 
   async function doLogin(){
-    errEl.style.display='none'; btn.disabled=true; btn.textContent='Please wait…';
+    errEl.style.display='none'; btn.disabled=true; btn.textContent='Please wait...';
     try{ await signInWithEmailAndPassword(auth,form.email.value.trim(),form.password.value); }
     catch(e){
       let msg='Something went wrong. Try again.';
@@ -657,7 +657,7 @@ function renderAuth(mode='login'){
     const invite=(form.invite?.value||'').trim().toUpperCase();
     if(!name){errEl.textContent='Please enter your name.';errEl.style.display='block';return;}
     if(pass.length<6){errEl.textContent='Password must be at least 6 characters.';errEl.style.display='block';return;}
-    btn.disabled=true; btn.textContent='Please wait…';
+    btn.disabled=true; btn.textContent='Please wait...';
     try{
       let pairData=null;
       if(invite){
@@ -682,7 +682,7 @@ function renderAuth(mode='login'){
   card.appendChild(btn); page.appendChild(card); wrap.appendChild(page); render(wrap);
 }
 
-// ── Shell ─────────────────────────────────────────────────────────────────
+// -- Shell -----------------------------------------------------------------
 function renderShell(user,userData){
   const wrap=div('shell');
   const topbar=div('topbar');
@@ -711,17 +711,17 @@ function renderShell(user,userData){
   if(currentTab==='admin'&&_isAdmin) renderAdmin(page,user,userData);
 }
 
-// ── Quote card ────────────────────────────────────────────────────────────
+// -- Quote card ------------------------------------------------------------
 function makeQuoteCard(){
   const q=getDailyQuote(todayStr());
   const card=div('quote-card');
   card.innerHTML=`<div class="quote-bg">"</div>
     <div class="quote-text">${q.text}</div>
-    <div class="quote-author">— ${q.author}</div>`;
+    <div class="quote-author">- ${q.author}</div>`;
   return card;
 }
 
-// ── Question block ────────────────────────────────────────────────────────
+// -- Question block --------------------------------------------------------
 function buildQuestionBlock(container, {qNum,q,myAnswer,partnerAnswer,partnerName,entryRef,user,isBonus}){
   const numEl=h('div','q-num',isBonus?'✦ Bonus question':`Question ${qNum} of 2`);
   const pill=el('span',{class:`pill${isBonus?' pill-gold':''}`},q.cat);
@@ -730,14 +730,14 @@ function buildQuestionBlock(container, {qNum,q,myAnswer,partnerAnswer,partnerNam
 
   if(!myAnswer){
     const lbl=h('label','label','Your answer');
-    const ta=el('textarea',{placeholder:'Write your honest answer…',rows:'3'});
+    const ta=el('textarea',{placeholder:'Write your honest answer...',rows:'3'});
     const hint=el('p',{class:'muted',style:{fontSize:'12px',textAlign:'center',marginTop:'8px'}},"Your partner won't see this until they answer too.");
     const submitBtn=el('button',{class:`btn ${isBonus?'btn-gold':'btn-primary'}`,style:{marginTop:'12px'}},'Submit answer');
     submitBtn.disabled=true;
     ta.oninput=()=>{submitBtn.disabled=!ta.value.trim();};
     submitBtn.onclick=async()=>{
       if(!ta.value.trim()) return;
-      submitBtn.disabled=true; submitBtn.textContent='Saving…';
+      submitBtn.disabled=true; submitBtn.textContent='Saving...';
       const freshSnap=await getDoc(entryRef);
       const freshData=freshSnap.exists()?freshSnap.data():{};
       if(isBonus){
@@ -753,7 +753,7 @@ function buildQuestionBlock(container, {qNum,q,myAnswer,partnerAnswer,partnerNam
     container.append(lbl,ta,submitBtn,hint);
   } else if(!partnerAnswer){
     const waiting=div('banner-rose');
-    waiting.append(div('dots',el('span'),el('span'),el('span')),el('span',{},'Waiting for ',el('strong',{},partnerName||'your partner'),' to answer…'));
+    waiting.append(div('dots',el('span'),el('span'),el('span')),el('span',{},'Waiting for ',el('strong',{},partnerName||'your partner'),' to answer...'));
       const grid=div('ans-grid');
     const myCard=div('ans-card'); myCard.appendChild(h('div','ans-who','You')); const myTxt=h('div','ans-text',''); myTxt.textContent=myAnswer; myCard.appendChild(myTxt);
     const pCard=div('ans-card'); pCard.appendChild(h('div','ans-who',partnerName||'Partner')); pCard.appendChild(h('div','ans-pending','Not yet answered'));
@@ -770,7 +770,7 @@ function buildQuestionBlock(container, {qNum,q,myAnswer,partnerAnswer,partnerNam
   }
 }
 
-// ── Today Tab ─────────────────────────────────────────────────────────────
+// -- Today Tab -------------------------------------------------------------
 async function renderToday(page,user,userData){
   page.innerHTML=''; page.appendChild(div('loading',div('spinner')));
   if(!userData?.pairCode){page.innerHTML='';renderNoPair(page,user,userData);return;}
@@ -811,7 +811,7 @@ async function renderToday(page,user,userData){
     const sep2=div('q-divider'); sep2.appendChild(el('span',{},'Question 2')); card.appendChild(sep2);
     buildQuestionBlock(card,{qNum:2,q:q2,myAnswer:myA2,partnerAnswer:pA2,partnerName,entryRef,user,isBonus:false});
 
-    // Bonus — only after both main questions fully revealed
+    // Bonus - only after both main questions fully revealed
     if(bothMain){
       const sepB=div('q-divider'); sepB.appendChild(el('span',{},'Bonus')); card.appendChild(sepB);
       if(!bonusUnlocked){
@@ -831,7 +831,7 @@ async function renderToday(page,user,userData){
   });
 }
 
-// ── No Pair ───────────────────────────────────────────────────────────────
+// -- No Pair ---------------------------------------------------------------
 function renderNoPair(page,user,userData){
   function showMain(){
     page.innerHTML='';
@@ -854,7 +854,7 @@ function renderNoPair(page,user,userData){
     const back=el('button',{class:'btn btn-ghost mt-3'},'Back'); back.onclick=showMain;
     card.append(title,sub,btn,back); page.appendChild(card);
     btn.onclick=async()=>{
-      btn.disabled=true; btn.textContent='Creating…';
+      btn.disabled=true; btn.textContent='Creating...';
       const code=genCode(),seed=Math.floor(Math.random()*9999);
       await setDoc(doc(db,'pairs',code),{code,seed,user1Id:user.uid,user1Name:userData.name,user1Email:userData.email,user2Id:null,user2Name:null,user2Email:null,createdAt:Date.now()});
       await updateDoc(doc(db,'users',user.uid),{pairCode:code});
@@ -887,7 +887,7 @@ function renderNoPair(page,user,userData){
     card.append(title,sub,lbl,inp,errEl,joinBtn,back); page.appendChild(card);
     joinBtn.onclick=async()=>{
       errEl.style.display='none';
-      const code=inp.value.trim().toUpperCase(); joinBtn.disabled=true; joinBtn.textContent='Joining…';
+      const code=inp.value.trim().toUpperCase(); joinBtn.disabled=true; joinBtn.textContent='Joining...';
       const ps=await getDoc(doc(db,'pairs',code));
       if(!ps.exists()){errEl.textContent='Code not found. Check and try again.';errEl.style.display='block';joinBtn.disabled=false;joinBtn.textContent='Join pair';return;}
       const pd=ps.data();
@@ -901,7 +901,7 @@ function renderNoPair(page,user,userData){
   showMain();
 }
 
-// ── History Tab ───────────────────────────────────────────────────────────
+// -- History Tab -----------------------------------------------------------
 async function renderHistory(page,user,userData){
   page.innerHTML=''; page.appendChild(div('loading',div('spinner')));
   if(!userData?.pairCode){
@@ -918,7 +918,7 @@ async function renderHistory(page,user,userData){
   const histSnap=await getDocs(collection(db,'pairs',userData.pairCode,'history'));
   page.innerHTML='';
   if(histSnap.empty){
-    page.appendChild(Object.assign(div('card text-center'),{innerHTML:"<p class='muted'>No history yet — answer today's questions to get started!</p>"}));
+    page.appendChild(Object.assign(div('card text-center'),{innerHTML:"<p class='muted'>No history yet - answer today's questions to get started!</p>"}));
     return;
   }
   const dates=histSnap.docs.sort((a,b)=>b.id.localeCompare(a.id));
@@ -995,7 +995,7 @@ function renderHistDetail(page,dateStr,entry,q1,q2,q3,user,partnerId,partnerName
   page.appendChild(card);
 }
 
-// ── Profile Tab ───────────────────────────────────────────────────────────
+// -- Profile Tab -----------------------------------------------------------
 async function renderProfile(page,user,userData){
   page.innerHTML=''; page.appendChild(div('loading',div('spinner')));
   let pairData=null,totalDays=0,bothDays=0,partnerName=null,partnerEmail=null,partnerId=null;
@@ -1042,7 +1042,7 @@ async function renderProfile(page,user,userData){
   }
   if(pairData&&!partnerName&&userData.pairCode){
     const iCard=div('card');
-    iCard.innerHTML=`<div class="serif-sm" style="margin-bottom:6px">Invite your partner</div><p class="muted" style="margin-bottom:4px">Share this code — works on any device.</p>`;
+    iCard.innerHTML=`<div class="serif-sm" style="margin-bottom:6px">Invite your partner</div><p class="muted" style="margin-bottom:4px">Share this code - works on any device.</p>`;
     const codeEl=div('invite-code'); codeEl.textContent=userData.pairCode;
     const copyBtn=el('button',{class:'btn btn-ghost'},'Copy code');
     copyBtn.onclick=()=>{navigator.clipboard.writeText(userData.pairCode).then(()=>{copyBtn.textContent='✓ Copied!';setTimeout(()=>copyBtn.textContent='Copy code',2000);});};
@@ -1054,13 +1054,13 @@ async function renderProfile(page,user,userData){
   soCard.appendChild(soBtn); page.appendChild(soCard);
 }
 
-// ── Admin Panel ───────────────────────────────────────────────────────────
+// -- Admin Panel -----------------------------------------------------------
 async function renderAdmin(page,user,userData){
   page.innerHTML=''; page.appendChild(div('loading',div('spinner')));
   const usersSnap=await getDocs(collection(db,'users'));
   page.innerHTML='';
 
-  // ── Reset today's questions card ──
+  // -- Reset today's questions card --
   const resetCard=div('card fade-in');
   const resetBadge=div('admin-badge'); resetBadge.textContent='⚙ Admin';
   const resetTitle=h('div','serif-md',"Today's Questions"); resetTitle.style.marginBottom='4px';
@@ -1106,7 +1106,7 @@ async function renderAdmin(page,user,userData){
   resetCard.append(resetBadge,resetTitle,resetSub,pairList);
   page.appendChild(resetCard);
 
-  // ── User management card ──
+  // -- User management card --
   const card=div('card');
   const title=h('div','serif-md','User management'); title.style.marginBottom='4px';
   const count=h('p','muted',`${usersSnap.size} account${usersSnap.size===1?'':'s'} registered`); count.style.marginBottom='18px';
@@ -1141,7 +1141,7 @@ function confirmDeleteAnswer(pairCode, dateStr, answersKey, uid, onDone){
   const cancelBtn=el('button',{class:'btn btn-ghost mt-3'},'Cancel');
   cancelBtn.onclick=()=>overlay.remove();
   confirmBtn.onclick=async()=>{
-    confirmBtn.disabled=true; confirmBtn.textContent='Deleting…';
+    confirmBtn.disabled=true; confirmBtn.textContent='Deleting...';
     try{
       const entryRef=doc(db,'pairs',pairCode,'history',dateStr);
       const snap=await getDoc(entryRef);
@@ -1164,6 +1164,7 @@ function confirmDeleteAnswer(pairCode, dateStr, answersKey, uid, onDone){
 }
 
 
+function confirmReset(pairCode, pairNames, dateStr, onDone){
   const overlay=div('modal-bg');
   const sheet=div('modal-sheet');
   sheet.innerHTML=`<div class="modal-handle"></div>
@@ -1175,7 +1176,7 @@ function confirmDeleteAnswer(pairCode, dateStr, answersKey, uid, onDone){
   const cancelBtn=el('button',{class:'btn btn-ghost mt-3'},'Cancel');
   cancelBtn.onclick=()=>overlay.remove();
   confirmBtn.onclick=async()=>{
-    confirmBtn.disabled=true; confirmBtn.textContent='Resetting…';
+    confirmBtn.disabled=true; confirmBtn.textContent='Resetting...';
     try{
       await deleteDoc(doc(db,'pairs',pairCode,'history',dateStr));
       overlay.remove(); onDone();
@@ -1199,7 +1200,7 @@ function confirmDelete(targetUser,onDone){
   const cancelBtn=el('button',{class:'btn btn-ghost mt-3'},'Cancel');
   cancelBtn.onclick=()=>overlay.remove();
   confirmBtn.onclick=async()=>{
-    confirmBtn.disabled=true; confirmBtn.textContent='Deleting…';
+    confirmBtn.disabled=true; confirmBtn.textContent='Deleting...';
     try{
       await deleteDoc(doc(db,'users',targetUser.uid));
       if(targetUser.pairCode){
@@ -1223,7 +1224,7 @@ function confirmDelete(targetUser,onDone){
   document.body.appendChild(overlay);
 }
 
-// ── Auth listener ──────────────────────────────────────────────────────────
+// -- Auth listener ----------------------------------------------------------
 onAuthStateChanged(auth,async(user)=>{
   if(unsubPair){unsubPair();unsubPair=null;}
   if(!user){renderAuth('login');return;}
