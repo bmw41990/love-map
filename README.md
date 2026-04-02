@@ -1,8 +1,6 @@
 # love-map
 Love Map Trivia app
 
-[index.html](https://github.com/user-attachments/files/26448510/index.html)
-[index.html](https://github.com/user-attachments/files/26448510/index.html)
 [Uploading<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -144,7 +142,7 @@ const auth = getAuth(fireApp);
 const db = getFirestore(fireApp);
 
 // ── Set your admin UID here after first login (see Profile tab for your UID) ─
-const ADMIN_UID = 'REPLACE_WITH_YOUR_UID';
+const ADMIN_UID = 'DOUPP6OffPezREAjqIFAQ9yOiRl1';
 
 // ── Questions ─────────────────────────────────────────────────────────────
 const QUESTIONS = [
