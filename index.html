@@ -3,6 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src https://*.googleapis.com https://*.firebaseio.com https://firestore.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com; img-src 'self' data:; frame-ancestors 'none';">
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
   <title>Love Map Trivia</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
@@ -599,6 +601,8 @@ function el(tag,props={},...children) {
 }
 function div(cls,...children){return el('div',{class:cls},...children);}
 function h(tag,cls,text){const e=document.createElement(tag);e.className=cls;e.textContent=text;return e;}
+// Escape user-supplied strings before inserting into innerHTML
+function esc(str){const d=document.createElement('div');d.textContent=str??'';return d.innerHTML;}
 
 // -- State -----------------------------------------------------------------
 let currentUser=null, currentTab='today', unsubPair=null;
@@ -645,8 +649,7 @@ function renderAuth(mode='login'){
     try{ await signInWithEmailAndPassword(auth,form.email.value.trim(),form.password.value); }
     catch(e){
       let msg='Something went wrong. Try again.';
-      if(e.code==='auth/user-not-found'||e.code==='auth/invalid-credential') msg='No account found, or wrong password.';
-      else if(e.code==='auth/wrong-password') msg='Incorrect password.';
+      if(e.code==='auth/user-not-found'||e.code==='auth/invalid-credential'||e.code==='auth/wrong-password') msg='Incorrect email or password.';
       else if(e.code==='auth/invalid-email') msg='Please enter a valid email.';
       errEl.textContent=msg; errEl.style.display='block'; btn.disabled=false; btn.textContent='Sign in';
     }
@@ -797,7 +800,7 @@ async function renderToday(page,user,userData){
 
     if(partnerName){
       const banner=div('banner-green');
-      banner.innerHTML=`<span>♡</span><span>Connected with <strong>${partnerName}</strong></span>`;
+      banner.innerHTML=`<span>♡</span><span>Connected with <strong>${esc(partnerName)}</strong></span>`;
       page.appendChild(banner);
     }
 
@@ -931,11 +934,16 @@ async function renderHistory(page,user,userData){
     const both2=entry.answers2?.[user.uid]&&partnerId&&entry.answers2?.[partnerId];
     const hasBonus=!!(entry.bonusAnswers?.[user.uid]&&partnerId&&entry.bonusAnswers?.[partnerId]);
     const item=div('hist-item');
-    item.innerHTML=`
-      <div style="font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-faint);margin-bottom:3px">${formatDate(snap.id)}</div>
-      <div class="serif-sm" style="margin-bottom:4px">${q1.text}</div>
-      <div class="muted" style="font-size:12px">${(both1&&both2)?'✦ Both answered':'Incomplete'}${hasBonus?' · +bonus':''}</div>
-    `;
+    const dateDiv=document.createElement('div');
+    dateDiv.style.cssText='font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-faint);margin-bottom:3px';
+    dateDiv.textContent=formatDate(snap.id);
+    const qDiv=document.createElement('div');
+    qDiv.className='serif-sm'; qDiv.style.marginBottom='4px';
+    qDiv.textContent=q1.text;
+    const statusDiv=document.createElement('div');
+    statusDiv.className='muted'; statusDiv.style.fontSize='12px';
+    statusDiv.textContent=`${(both1&&both2)?'✦ Both answered':'Incomplete'}${hasBonus?' · +bonus':''}`;
+    item.append(dateDiv,qDiv,statusDiv);
     item.onclick=()=>renderHistDetail(page,snap.id,entry,q1,q2,q3,user,partnerId,partnerName,userData);
     page.appendChild(item);
   });
@@ -975,7 +983,7 @@ function renderHistDetail(page,dateStr,entry,q1,q2,q3,user,partnerId,partnerName
       grid.appendChild(myCard);
       // Partner answer card
       const pCard=div('ans-card');
-      pCard.innerHTML=`<div class="ans-who">${partnerName||'Partner'}</div>`;
+      pCard.innerHTML=`<div class="ans-who">${esc(partnerName)||'Partner'}</div>`;
       if(pA){ pCard.appendChild(h('div','ans-text',pA)); }
       else { pCard.appendChild(h('div','ans-pending','Not answered')); }
       grid.appendChild(pCard);
@@ -1031,7 +1039,7 @@ async function renderProfile(page,user,userData){
     const pt=h('div','serif-sm','Your partner'); pt.style.marginBottom='14px';
     const prow=div(''); prow.style.cssText='display:flex;align-items:center;gap:12px;margin-bottom:16px';
     const pav=div('avatar avatar-sm avatar-blue'); pav.textContent=partnerName[0].toUpperCase();
-    const pinfo=div(''); pinfo.innerHTML=`<div style="font-weight:500">${partnerName}</div><div class="muted">${partnerEmail||''}</div>`;
+    const pinfo=div(''); pinfo.innerHTML=`<div style="font-weight:500">${esc(partnerName)}</div><div class="muted">${esc(partnerEmail)||''}</div>`;
     prow.append(pav,pinfo);
     const stats=div('stat-grid');
     [{n:totalDays,l:'days active'},{n:bothDays,l:'both answered'}].forEach(({n,l})=>{
@@ -1088,7 +1096,7 @@ async function renderAdmin(page,user,userData){
     const names=`${pd.user1Name||'?'}${pd.user2Name?' & '+pd.user2Name:''}`;
     const status=!hasAny?'No answers yet':(!u1answered||!u2answered)?'In progress':'Both answered';
     const statusColor=!hasAny?'var(--ink-faint)':(!u1answered||!u2answered)?'var(--gold)':'var(--green)';
-    info.innerHTML=`<div class="user-name">${names}</div><div style="font-size:12px;color:${statusColor};margin-top:1px">${status}</div>`;
+    info.innerHTML=`<div class="user-name">${esc(names)}</div><div style="font-size:12px;color:${statusColor};margin-top:1px">${esc(status)}</div>`;
 
     const resetBtn=el('button',{class:'btn btn-ghost btn-sm'},'Reset');
     resetBtn.style.cssText='color:var(--rose-dark);border-color:var(--rose-mid)';
@@ -1119,7 +1127,7 @@ async function renderAdmin(page,user,userData){
     hasOthers=true;
     const row=div('user-row');
     const info=div('');
-    info.innerHTML=`<div class="user-name">${u.name||'Unknown'}</div><div class="user-email">${u.email||''}</div>`;
+    info.innerHTML=`<div class="user-name">${esc(u.name)||'Unknown'}</div><div class="user-email">${esc(u.email)||''}</div>`;
     const delBtn=el('button',{class:'btn btn-danger btn-sm'},'Delete');
     delBtn.onclick=()=>confirmDelete(u,()=>renderAdmin(page,user,userData));
     row.append(info,delBtn); list.appendChild(row);
