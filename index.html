@@ -101,6 +101,26 @@
     .fade-in { animation:fadeIn .3s ease; }
     @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
     .center-icon { font-size:52px; text-align:center; margin-bottom:16px; }
+
+    /* ── Guess question ── */
+    .guess-options { display:flex; flex-direction:column; gap:9px; margin-top:4px; }
+    .guess-opt {
+      padding:12px 16px; border-radius:var(--rsm); border:1.5px solid var(--cream-3);
+      background:var(--cream); font-family:var(--sans); font-size:14px; color:var(--ink);
+      cursor:pointer; text-align:left; transition:all .15s; width:100%;
+    }
+    .guess-opt:hover:not(:disabled) { border-color:var(--rose-mid); background:var(--rose-light); }
+    .guess-opt.selected { border-color:var(--rose); background:var(--rose-light); color:var(--rose-dark); font-weight:500; }
+    .guess-opt:disabled { cursor:not-allowed; opacity:.7; }
+    .guess-opt.correct { border-color:var(--green); background:var(--green-light); color:var(--green); font-weight:500; }
+    .guess-opt.wrong { border-color:#C84040; background:#FEF0F0; color:#A03030; font-weight:500; }
+    .guess-result { display:flex; align-items:flex-start; gap:12px; padding:14px; border-radius:var(--rsm); margin-top:14px; }
+    .guess-result.win { background:var(--green-light); border:1px solid rgba(58,125,92,.2); }
+    .guess-result.lose { background:#FEF0F0; border:1px solid rgba(160,48,48,.15); }
+    .guess-result-icon { font-size:22px; line-height:1; flex-shrink:0; margin-top:1px; }
+    .guess-result-text { font-size:13px; line-height:1.5; }
+    .guess-result-text strong { display:block; font-size:14px; margin-bottom:2px; }
+    .pill-purple { background:#EEEDFE; color:#3C3489; }
     .q-divider { display:flex; align-items:center; gap:10px; margin:22px 0 18px; }
     .q-divider::before, .q-divider::after { content:''; flex:1; height:1px; background:var(--cream-3); }
     .q-divider span { font-size:11px; font-weight:500; text-transform:uppercase; letter-spacing:.09em; color:var(--ink-faint); white-space:nowrap; }
@@ -559,6 +579,45 @@ const QUOTES = [
   {text:"Love is not about how many days, months, or years you have been together. It's how much you love each other every single day.",author:"Unknown"},
 ];
 
+// -- Guess Questions (multiple choice, guess your partner's answer) --------
+const GUESS_QUESTIONS = [
+  {id:'g1', text:"Which would your partner choose for a vacation?", options:["Beach & relaxation","City sightseeing","Mountain adventure","Road trip"]},
+  {id:'g2', text:"Your partner's ideal weekend morning is...", options:["Sleep in late","Up early, coffee & quiet","Brunch with friends","Exercise first thing"]},
+  {id:'g3', text:"Which best describes your partner's spending style?", options:["Saver — always","Spender — life is short","Somewhere in between","Depends on the mood"]},
+  {id:'g4', text:"Your partner would rather watch...", options:["A romantic drama","An action thriller","A comedy","A documentary"]},
+  {id:'g5', text:"Your partner's go-to comfort food is closest to...", options:["Something sweet","Something savory","Pizza or pasta","Whatever's easiest"]},
+  {id:'g6', text:"In a group setting your partner is most likely to be...", options:["The life of the party","Quietly observing","Deep in one conversation","Ready to leave early"]},
+  {id:'g7', text:"Your partner prefers to resolve conflict by...", options:["Talking it out immediately","Taking space first","Writing it out","Letting it go naturally"]},
+  {id:'g8', text:"Your partner's ideal home feels...", options:["Cozy and warm","Clean and minimal","Eclectic and full of personality","Outdoorsy and natural"]},
+  {id:'g9', text:"Given a free afternoon, your partner would most likely...", options:["Read or watch something","Get outside","Work on a project","Nap guilt-free"]},
+  {id:'g10', text:"Your partner's relationship with their phone is...", options:["Attached — always on","Balanced — checks it sometimes","Could live without it","Trying to use it less"]},
+  {id:'g11', text:"Your partner would rather have...", options:["One deep lifelong friendship","Many casual friendships","A mix of both","Close family over friends"]},
+  {id:'g12', text:"Your partner expresses love most through...", options:["Words of affirmation","Acts of service","Quality time","Physical touch","Gifts"]},
+  {id:'g13', text:"Your partner's approach to being on time is...", options:["Always early","Right on time","Fashionably late","It depends"]},
+  {id:'g14', text:"Your partner would rather live in...", options:["A big city","A small town","Suburbs","The countryside"]},
+  {id:'g15', text:"Your partner would choose...", options:["Hot weather year-round","Cold weather year-round","Four distinct seasons","Mild all year"]},
+  {id:'g16', text:"Your partner's ideal Friday night is...", options:["Cozy night in","Dinner out","See friends","Something spontaneous"]},
+  {id:'g17', text:"Your partner handles stress by...", options:["Talking to someone","Going quiet and processing","Exercising or moving","Distracting with something fun"]},
+  {id:'g18', text:"Your partner would rather...", options:["Cook a meal at home","Order takeout","Go out to eat","Meal prep for the week"]},
+  {id:'g19', text:"Your partner thinks about the future...", options:["Constantly — always planning","Occasionally — big decisions only","Tries to stay present","Mix of both"]},
+  {id:'g20', text:"Your partner's work style is most like...", options:["Focused deep work in long blocks","Short bursts with breaks","Collaborative with others","Driven by deadlines"]},
+  {id:'g21', text:"Your partner would rather receive...", options:["A heartfelt letter","A thoughtful gift","A planned experience","Help with something practical"]},
+  {id:'g22', text:"Your partner's social battery...", options:["Never really runs out","Recharges with people","Recharges with alone time","Depends on who it is"]},
+  {id:'g23', text:"Your partner would rather...", options:["Revisit a favourite place","Explore somewhere brand new","Mix of familiar and new","Wherever is easiest"]},
+  {id:'g24', text:"Your partner prefers to exercise...", options:["First thing in the morning","After work","Whenever fits","Honestly, rarely"]},
+  {id:'g25', text:"Your partner's approach to making decisions is...", options:["Decisive — trust the gut","Researches everything first","Asks for others' opinions","Overthinks, then decides"]},
+  {id:'g26', text:"Your partner would choose...", options:["A big wedding","A small intimate ceremony","Elope quietly","Destination wedding"]},
+  {id:'g27', text:"Your partner's relationship with social media is...", options:["Very active — posts often","Lurker — scrolls but rarely posts","Rarely uses it","Actively trying to quit"]},
+  {id:'g28', text:"Your partner would rather spend a day...", options:["At a museum or gallery","At a farmers market or festival","Hiking or in nature","At a spa or relaxing"]},
+  {id:'g29', text:"When dining out your partner is most likely to...", options:["Order the same favourite","Try something new every time","Ask the waiter for a recommendation","Go wherever has the best reviews"]},
+  {id:'g30', text:"Your partner's sleep schedule is closest to...", options:["Early bird — up at 6am+","Night owl — up past midnight","Somewhere in the middle","Completely inconsistent"]},
+  {id:'g31', text:"Your partner would rather...", options:["Have a housekeeper","Have a personal chef","Have a driver","Have a personal trainer"]},
+  {id:'g32', text:"Your partner values in a home most...", options:["Location","Space and size","Character and charm","Modern and updated"]},
+  {id:'g33', text:"Your partner's ideal holiday gift is...", options:["Something they'd never buy themselves","Something practical they need","An experience together","Nothing — just quality time"]},
+  {id:'g34', text:"Your partner would describe themselves as...", options:["More of an optimist","More of a realist","Somewhere in between","Depends on the day"]},
+  {id:'g35', text:"Your partner's relationship with exercise is...", options:["Loves it — a real priority","Likes it when motivated","Does it out of obligation","Would rather not"]},
+];
+
 // -- Helpers ---------------------------------------------------------------
 function todayStr() {
   const d=new Date();
@@ -577,8 +636,8 @@ function getDayQuestions(dateStr, seed) {
   }
   const i1=hash('q1')%QUESTIONS.length;
   let i2=hash('q2')%QUESTIONS.length; if(i2===i1) i2=(i2+1)%QUESTIONS.length;
-  let i3=hash('q3')%QUESTIONS.length; if(i3===i1||i3===i2) i3=(i3+2)%QUESTIONS.length;
-  return [QUESTIONS[i1],QUESTIONS[i2],QUESTIONS[i3]];
+  const i3=hash('gq')%GUESS_QUESTIONS.length;
+  return [QUESTIONS[i1], QUESTIONS[i2], GUESS_QUESTIONS[i3]];
 }
 function getDailyQuote(dateStr) {
   let h=0; for(let i=0;i<dateStr.length;i++){h=((h<<5)-h)+dateStr.charCodeAt(i);h|=0;}
@@ -773,6 +832,93 @@ function buildQuestionBlock(container, {qNum,q,myAnswer,partnerAnswer,partnerNam
   }
 }
 
+// -- Guess block -----------------------------------------------------------
+function buildGuessBlock(container, {gq, myGuess, partnerGuess, partnerName, entryRef, user, partnerId, entry}){
+  const numEl=h('div','q-num','Question 3 of 3');
+  const pill=el('span',{class:'pill pill-purple'},'Guess Your Partner');
+  const qEl=h('div','serif-lg', gq.text); qEl.style.marginBottom='16px';
+  container.append(numEl, pill, qEl);
+
+  if(!myGuess){
+    // Show multiple choice options
+    const hint=h('p','muted','What do you think YOUR PARTNER would choose?');
+    hint.style.cssText='font-size:12px;margin-bottom:12px;color:var(--ink-soft)';
+    container.appendChild(hint);
+    const optWrap=div('guess-options');
+    gq.options.forEach(opt=>{
+      const btn=el('button',{class:'guess-opt'},opt);
+      btn.onclick=async()=>{
+        optWrap.querySelectorAll('.guess-opt').forEach(b=>{b.disabled=true;});
+        btn.classList.add('selected');
+        const freshSnap=await getDoc(entryRef);
+        const freshData=freshSnap.exists()?freshSnap.data():{};
+        if(!freshData.guessAnswers) freshData.guessAnswers={};
+        freshData.guessAnswers[user.uid]=opt;
+        freshData.guessQId=gq.id;
+        await setDoc(entryRef,freshData,{merge:true});
+      };
+      optWrap.appendChild(btn);
+    });
+    container.appendChild(optWrap);
+    const hint2=h('p','muted',"Your partner won't see your guess until they answer too.");
+    hint2.style.cssText='font-size:12px;text-align:center;margin-top:10px';
+    container.appendChild(hint2);
+
+  } else if(!partnerGuess){
+    // Waiting for partner
+    const waiting=div('banner-rose');
+    waiting.append(div('dots',el('span'),el('span'),el('span')),el('span',{},'Waiting for ',el('strong',{},partnerName||'your partner'),' to guess...'));
+    container.appendChild(waiting);
+    const yourPick=h('p','muted',`Your guess: ${myGuess}`);
+    yourPick.style.cssText='text-align:center;margin-top:10px;font-size:13px';
+    container.appendChild(yourPick);
+
+  } else {
+    // Both guessed — reveal results
+    // myGuess = what I think my partner chose
+    // partnerGuess = what my partner thinks I chose
+    // Check if each person guessed correctly
+    const iGuessedRight = myGuess === partnerGuess; // I guessed what partner picked as their answer
+    // Actually the correct answer is: did I (guesser) pick what my partner (the subject) would pick?
+    // myGuess is "what I think partner would choose"
+    // partnerGuess is "what partner thinks I would choose"
+    // They are correct if: myGuess === partnerGuess (they both think the same about each other)
+    // But more accurately: partnerGuess is their guess about ME, myGuess is my guess about PARTNER
+    // partnerGuess correct = partnerGuess === myGuess (partner guessed I'd pick X, and I did pick X as my guess)
+    // Wait - neither person picks FOR themselves, both pick FOR their partner.
+    // So: I picked [myGuess] for what partner would say. Partner picked [partnerGuess] for what I would say.
+    // iGuessedRight = myGuess === partnerGuess (I said partner picks X, partner said I pick Y — independent)
+    // There is no "actual" answer here since neither picked for themselves.
+    // REVISED: show both guesses side by side and highlight if they match (they agreed on each other)
+    const theyMatch = myGuess === partnerGuess;
+
+    const resultBanner = div(`guess-result ${theyMatch?'win':'lose'}`);
+    const icon = document.createElement('div');
+    icon.className='guess-result-icon'; icon.textContent=theyMatch?'🎯':'💭';
+    const txt = div('guess-result-text');
+    const strong = document.createElement('strong');
+    strong.textContent = theyMatch ? 'You think alike!' : 'You see each other differently!';
+    const sub = document.createElement('span');
+    sub.textContent = theyMatch
+      ? `You both guessed the same answer for each other.`
+      : `Interesting — you had different answers in mind for each other.`;
+    txt.append(strong, sub);
+    resultBanner.append(icon, txt);
+    container.appendChild(resultBanner);
+
+    // Show both guesses side by side
+    const grid=div('ans-grid'); grid.style.marginTop='12px';
+    const myCard=div('ans-card');
+    myCard.appendChild(h('div','ans-who','Your guess for them'));
+    const myTxt=h('div','ans-text',''); myTxt.textContent=myGuess; myCard.appendChild(myTxt);
+    const pCard=div('ans-card');
+    pCard.appendChild(h('div','ans-who',`${esc(partnerName)||'Partner'}'s guess for you`));
+    const pTxt=h('div','ans-text',''); pTxt.textContent=partnerGuess; pCard.appendChild(pTxt);
+    grid.append(myCard, pCard);
+    container.appendChild(grid);
+  }
+}
+
 // -- Today Tab -------------------------------------------------------------
 async function renderToday(page,user,userData){
   page.innerHTML=''; page.appendChild(div('loading',div('spinner')));
@@ -792,9 +938,9 @@ async function renderToday(page,user,userData){
     const entry=snap.exists()?snap.data():null;
     const myA1=entry?.answers1?.[user.uid], pA1=partnerId?entry?.answers1?.[partnerId]:null;
     const myA2=entry?.answers2?.[user.uid], pA2=partnerId?entry?.answers2?.[partnerId]:null;
-    const myAB=entry?.bonusAnswers?.[user.uid], pAB=partnerId?entry?.bonusAnswers?.[partnerId]:null;
+    const myGuess=entry?.guessAnswers?.[user.uid], pGuess=partnerId?entry?.guessAnswers?.[partnerId]:null;
     const both1=!!(myA1&&pA1), both2=!!(myA2&&pA2), bothMain=both1&&both2;
-    const bonusUnlocked=!!(entry?.bonusQId||entry?.bonusAnswers);
+    const bothGuessed=!!(myGuess&&pGuess);
 
     page.innerHTML='';
 
@@ -810,23 +956,13 @@ async function renderToday(page,user,userData){
     // Q1
     buildQuestionBlock(card,{qNum:1,q:q1,myAnswer:myA1,partnerAnswer:pA1,partnerName,entryRef,user,isBonus:false});
 
-    // Q2 separator + block
+    // Q2
     const sep2=div('q-divider'); sep2.appendChild(el('span',{},'Question 2')); card.appendChild(sep2);
     buildQuestionBlock(card,{qNum:2,q:q2,myAnswer:myA2,partnerAnswer:pA2,partnerName,entryRef,user,isBonus:false});
 
-    // Bonus - only after both main questions fully revealed
-    if(bothMain){
-      const sepB=div('q-divider'); sepB.appendChild(el('span',{},'Bonus')); card.appendChild(sepB);
-      if(!bonusUnlocked){
-        const hint=h('p','muted',"You've both finished today's questions. Want to go deeper?");
-        hint.style.cssText='text-align:center;font-size:13px;margin-bottom:12px';
-        const bonusBtn=el('button',{class:'btn btn-gold'},'✦ Unlock a bonus question');
-        bonusBtn.onclick=async()=>{ await setDoc(entryRef,{bonusQId:q3.id},{merge:true}); };
-        card.append(hint,bonusBtn);
-      } else {
-        buildQuestionBlock(card,{qNum:null,q:q3,myAnswer:myAB,partnerAnswer:pAB,partnerName,entryRef,user,isBonus:true});
-      }
-    }
+    // Q3 — Guess your partner
+    const sep3=div('q-divider'); sep3.appendChild(el('span',{},'Guess your partner')); card.appendChild(sep3);
+    buildGuessBlock(card,{gq:q3,myGuess,partnerGuess:pGuess,partnerName,entryRef,user,partnerId,entry});
 
     page.appendChild(card);
     // Daily quote below the question card
@@ -932,7 +1068,8 @@ async function renderHistory(page,user,userData){
     const [q1,q2,q3]=getDayQuestions(snap.id,pd.seed);
     const both1=entry.answers1?.[user.uid]&&partnerId&&entry.answers1?.[partnerId];
     const both2=entry.answers2?.[user.uid]&&partnerId&&entry.answers2?.[partnerId];
-    const hasBonus=!!(entry.bonusAnswers?.[user.uid]&&partnerId&&entry.bonusAnswers?.[partnerId]);
+    const bothGuessed=!!(entry.guessAnswers?.[user.uid]&&partnerId&&entry.guessAnswers?.[partnerId]);
+    const theyMatched=bothGuessed&&entry.guessAnswers[user.uid]===entry.guessAnswers[partnerId];
     const item=div('hist-item');
     const dateDiv=document.createElement('div');
     dateDiv.style.cssText='font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-faint);margin-bottom:3px';
@@ -942,7 +1079,7 @@ async function renderHistory(page,user,userData){
     qDiv.textContent=q1.text;
     const statusDiv=document.createElement('div');
     statusDiv.className='muted'; statusDiv.style.fontSize='12px';
-    statusDiv.textContent=`${(both1&&both2)?'✦ Both answered':'Incomplete'}${hasBonus?' · +bonus':''}`;
+    statusDiv.textContent=`${(both1&&both2)?'✦ Both answered':'Incomplete'}${bothGuessed?(theyMatched?' · 🎯 Matched':' · 💭 Guessed'):''}`;
     item.append(dateDiv,qDiv,statusDiv);
     item.onclick=()=>renderHistDetail(page,snap.id,entry,q1,q2,q3,user,partnerId,partnerName,userData);
     page.appendChild(item);
@@ -996,9 +1133,28 @@ function renderHistDetail(page,dateStr,entry,q1,q2,q3,user,partnerId,partnerName
   showQ(1,q1,false);
   const sep=div('q-divider'); sep.appendChild(el('span',{},'Question 2')); card.appendChild(sep);
   showQ(2,q2,false);
-  if(entry.bonusAnswers||entry.bonusQId){
-    const sepB=div('q-divider'); sepB.appendChild(el('span',{},'Bonus')); card.appendChild(sepB);
-    showQ(null,q3,true);
+  if(entry.guessAnswers){
+    const sepG=div('q-divider'); sepG.appendChild(el('span',{},'Guess your partner')); card.appendChild(sepG);
+    const myG=entry.guessAnswers?.[user.uid], pG=partnerId?entry.guessAnswers?.[partnerId]:null;
+    const numEl=h('div','q-num','Question 3 of 3');
+    const pill=el('span',{class:'pill pill-purple'},'Guess Your Partner');
+    const qEl=h('div','serif-lg',q3.text); qEl.style.marginBottom='14px';
+    card.append(numEl,pill,qEl);
+    if(myG&&pG){
+      const theyMatch=myG===pG;
+      const resultBanner=div(`guess-result ${theyMatch?'win':'lose'}`);
+      const icon=document.createElement('div'); icon.className='guess-result-icon'; icon.textContent=theyMatch?'🎯':'💭';
+      const txt=div('guess-result-text');
+      const strong=document.createElement('strong'); strong.textContent=theyMatch?'You thought alike!':'You saw each other differently!';
+      const sub=document.createElement('span'); sub.textContent=theyMatch?'You both guessed the same answer for each other.':'You had different answers in mind for each other.';
+      txt.append(strong,sub); resultBanner.append(icon,txt); card.appendChild(resultBanner);
+      const grid=div('ans-grid'); grid.style.marginTop='12px';
+      const myCard=div('ans-card'); myCard.appendChild(h('div','ans-who','Your guess for them')); const myTxt=h('div','ans-text',''); myTxt.textContent=myG; myCard.appendChild(myTxt);
+      const pCard=div('ans-card'); pCard.appendChild(h('div','ans-who',`${esc(partnerName)||'Partner'}'s guess for you`)); const pTxt=h('div','ans-text',''); pTxt.textContent=pG; pCard.appendChild(pTxt);
+      grid.append(myCard,pCard); card.appendChild(grid);
+    } else {
+      card.appendChild(Object.assign(el('p',{class:'muted'}),{textContent:"Both guesses weren't submitted for this question."}));
+    }
   }
   page.appendChild(card);
 }
